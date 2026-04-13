@@ -97,12 +97,12 @@
 
         <div class="comments-list" style="margin-top: 2rem;">
             {% for comment in comments %}
-            <div class="comment-item" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                <img src="https://ui-avatars.com/api/?name={{ comment.author.get_full_name|urlencode }}&background=random" style="width: 32px; height: 32px; border-radius: 50%;">
-                <div style="flex: 1; background: #f8fafc; padding: 1rem; border-radius: 12px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-weight: 600; font-size: 0.9rem;">{{ comment.author.get_full_name }}</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">{{ comment.created_at|timesince }}</span>
+            <div class="comment-item">
+                <img src="https://ui-avatars.com/api/?name={{ comment.author.get_full_name|urlencode }}&background=random" class="comment-avatar">
+                <div class="comment-bubble">
+                    <div class="comment-header">
+                        <span class="comment-author">{{ comment.author.get_full_name }}</span>
+                        <span class="comment-time">{{ comment.created_at|timesince }}</span>
                     </div>
                     <p style="font-size: 0.95rem;">{{ comment.content }}</p>
                 </div>
@@ -112,16 +112,4 @@
     </div>
 </div>
 
-<style>
-.media-file-proxy {
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #f8fafc;
-    gap: 0.75rem;
-    color: var(--text-main) !important;
-}
-</style>
 {% endblock %}

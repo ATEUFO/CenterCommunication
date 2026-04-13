@@ -57,7 +57,7 @@
                         {% for media in post.media.all %}
                         <div class="media-item">
                             {% if media.media_type == 'IMAGE' %}
-                                <div class="image-wrapper" style="cursor: pointer;" onclick="window.location.href='{% url 'post_detail' post.pk %}'">
+                                <div class="image-wrapper" style="cursor: pointer;" onclick='window.location.href="{% url "post_detail" post.pk %}"'>
                                     <img src="{{ media.file.url }}" alt="Image Preview">
                                 </div>
                             {% elif media.media_type == 'VIDEO' %}
@@ -100,19 +100,4 @@
     </div>
 </div>
 
-<style>
-.media-file-proxy {
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #f8fafc;
-    gap: 0.5rem;
-    color: var(--text-main) !important;
-}
-.media-file-proxy:hover {
-    background: #f1f5f9;
-}
-</style>
 {% endblock %}
