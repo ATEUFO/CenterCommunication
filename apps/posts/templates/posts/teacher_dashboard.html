@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Espace Enseignant - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="dashboard-container fade-in">
+    <div class="dashboard-header">
+        <div>
+            <h1>Bonjour, {{ user.first_name|default:user.username }}</h1>
+            <p class="text-muted">Espace Enseignant - Managez vos classes et communiquez avec vos élèves.</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'post_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Publier une annonce
+            </a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="stat-info">
+                <h4>Mes Classes</h4>
+                <div class="value">{{ user.teacher_profile.classrooms.count }}</div>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--success-color);">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-info">
+                <h4>Mes Publications</h4>
+                <div class="value">{{ posts.count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Mes dernières publications</h2>
+    </div>
+
+    <div class="feed-container">
+        {% for post in posts %}
+            <div class="card post-card fade-in">
+                <div class="post-header">
+                    <div class="author-meta">
+                        <h3>{{ post.title }}</h3>
+                        <span class="post-date">{{ post.created_at|date:"d M Y, H:i" }}</span>
+                    </div>
+                    <span class="post-type-badge badge-class">
+                        Classe: {{ post.classroom.name }}
+                    </span>
+                </div>
+                <div class="post-content">
+                    <p>{{ post.content|truncatewords:50 }}</p>
+                    {% if post.media.exists %}
+                    <div class="media-gallery">
+                        {% for media in post.media.all %}
+                        <div class="media-item">
+                            {% if media.media_type == 'IMAGE' %}
+                                <div class="image-wrapper" style="cursor: pointer;" onclick="window.location.href='{% url 'post_detail' post.pk %}'">
+                                    <img src="{{ media.file.url }}" alt="Image Preview">
+                                </div>
+                            {% elif media.media_type == 'VIDEO' %}
+                                <div class="video-preview" style="background: #000; display: flex; align-items: center; justify-content: center; height: 150px; color: white;">
+                                    <i class="fas fa-play-circle fa-2x"></i>
+                                </div>
+                            {% elif media.media_type == 'PDF' %}
+                                <div class="pdf-preview" style="background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 150px; gap: 0.5rem; color: var(--text-main);">
+                                    <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                                    <span style="font-size: 0.8rem; font-weight: 600;">Document PDF</span>
+                                </div>
+                            {% else %}
+                                <div class="other-preview" style="background: #f1f5f9; display: flex; align-items: center; justify-content: center; height: 150px; color: var(--text-muted);">
+                                    <i class="fas fa-file-alt fa-2x"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="media-file-info" style="padding: 0.5rem 0.75rem; border-top: 1px solid var(--border-color); background: white;">
+                                <span style="font-size: 0.75rem;"><i class="fas {% if media.media_type == 'IMAGE' %}fa-image{% elif media.media_type == 'VIDEO' %}fa-video{% elif media.media_type == 'PDF' %}fa-file-pdf{% else %}fa-file-alt{% endif %}"></i> {{ media.get_media_type_display }}</span>
+                                <a href="{{ media.file.url }}" target="_blank" class="text-primary"><i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="post-footer">
+                    <a href="{% url 'post_detail' post.pk %}" class="post-action">
+                        <i class="fas fa-comment"></i> {{ post.comments.count }} Commentaires
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p>Vous n'avez pas encore publié d'annonces.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.media-file-proxy {
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    gap: 0.5rem;
+}
+</style>
+{% endblock %}

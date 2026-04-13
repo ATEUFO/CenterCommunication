@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Mon Profil - CenterCommunication{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>Mon Profil</h1>
+</div>
+<div style="display: grid; grid-template-columns: 350px 1fr; gap: 2rem;">
+    <div class="card" style="text-align: center;">
+        <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&size=120&background=0D8ABC&color=fff" style="border-radius: 50%; margin-bottom: 1rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700;">{{ user.get_full_name|default:user.username }}</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">{{ user.get_role_display }}</p>
+        <div style="text-align: left; background: var(--background-color); padding: 1rem; border-radius: 8px;">
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">Email</p>
+            <p style="font-weight: 600; margin-bottom: 1rem;">{{ user.email }}</p>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">Membre depuis</p>
+            <p style="font-weight: 600;">{{ user.date_joined|date:"d F Y" }}</p>
+        </div>
+    </div>
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 700;">Informations Académiques</h3>
+        {% if academic_info %}
+            {% if user.role == "STUDENT" %}
+            <div class="form-group">
+                <label>Matricule</label>
+                <div class="input-control" style="background: var(--background-color);">{{ academic_info.matricule }}</div>
+            </div>
+            <div class="form-group">
+                <label>Classe</label>
+                <div class="input-control" style="background: var(--background-color);">{{ academic_info.classroom.name }}</div>
+            </div>
+            {% elif user.role == "TEACHER" %}
+            <div class="form-group">
+                <label>Spécialité</label>
+                <div class="input-control" style="background: var(--background-color);">{{ academic_info.speciality }}</div>
+            </div>
+            {% endif %}
+        {% else %}
+            <p style="color: var(--text-muted);">Aucune information académique disponible.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="feed-container fade-in">
+    <div class="card post-card">
+        <div class="post-header">
+            <div class="post-author">
+                <img src="https://ui-avatars.com/api/?name={{ post.author.get_full_name|urlencode }}&background=random" alt="Avatar">
+                <div class="author-meta">
+                    <h3>{{ post.author.get_full_name }}</h3>
+                    <span class="post-date">{{ post.created_at|date:"d M Y, H:i" }}</span>
+                </div>
+            </div>
+            <span class="post-type-badge badge-{{ post.post_type|lower }}">
+                {{ post.get_post_type_display }}
+            </span>
+        </div>
+        <div class="post-content">
+            <h1 style="font-size: 1.5rem; margin-bottom: 1rem;">{{ post.title }}</h1>
+            <p style="white-space: pre-wrap;">{{ post.content }}</p>
+            
+            {% if media_list %}
+            <div class="media-section" style="margin-top: 2rem;">
+                <h3 style="font-size: 1.125rem; margin-bottom: 1.25rem; font-weight: 700; color: var(--text-main);">Pièces jointes</h3>
+                <div class="media-gallery">
+                    {% for media in media_list %}
+                    <div class="media-item fade-in" style="animation-delay: '{{ forloop.counter0|add:0.1 }}'s">
+                        {% if media.media_type == 'IMAGE' %}
+                            <div class="image-container" style="cursor: zoom-in;" onclick="window.open('{{ media.file.url }}', '_blank')">
+                                <img src="{{ media.file.url }}" alt="Image">
+                            </div>
+                        {% elif media.media_type == 'VIDEO' %}
+                            <div class="video-container">
+                                <video controls preload="metadata">
+                                    <source src="{{ media.file.url }}">
+                                    Votre navigateur ne supporte pas la lecture de vidéos.
+                                </video>
+                            </div>
+                        {% elif media.media_type == 'PDF' %}
+                            <div class="pdf-container">
+                                <object data="{{ media.file.url }}" type="application/pdf" width="100%" height="100%">
+                                    <div class="media-file-proxy">
+                                        <i class="fas fa-file-pdf text-danger fa-3x"></i>
+                                        <span style="font-weight: 600;">Aperçu non disponible</span>
+                                        <a href="{{ media.file.url }}" target="_blank" class="btn btn-primary btn-sm">Ouvrir le PDF</a>
+                                    </div>
+                                </object>
+                            </div>
+                        {% else %}
+                            <a href="{{ media.file.url }}" target="_blank" class="media-file-proxy" style="height: 200px;">
+                                <i class="fas fa-file-alt text-muted fa-3x"></i>
+                                <span style="font-weight: 600;">Télécharger le fichier</span>
+                            </a>
+                        {% endif %}
+
+
+
+                        
+                        <div class="media-file-info">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="media-type-icon">
+                                    <i class="fas {% if media.media_type == 'IMAGE' %}fa-image{% elif media.media_type == 'VIDEO' %}fa-video{% elif media.media_type == 'PDF' %}fa-file-pdf{% else %}fa-file-alt{% endif %}"></i>
+                                </div>
+                                <span style="font-weight: 500;">{{ media.get_media_type_display }}</span>
+                            </div>
+                            <a href="{{ media.file.url }}" download class="text-primary" title="Télécharger">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section" style="margin-top: 2rem;">
+        <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Commentaires ({{ comments.count }})</h2>
+        
+        <div class="card">
+            <form action="#" method="post"> <!-- Comment logic not yet implemented in views but kept for UI -->
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea class="input-control" placeholder="Ajouter un commentaire..." rows="2"></textarea>
+                </div>
+                <div style="text-align: right;">
+                    <button type="submit" class="btn btn-primary" disabled>Envoyer (Bientôt)</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="comments-list" style="margin-top: 2rem;">
+            {% for comment in comments %}
+            <div class="comment-item" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <img src="https://ui-avatars.com/api/?name={{ comment.author.get_full_name|urlencode }}&background=random" style="width: 32px; height: 32px; border-radius: 50%;">
+                <div style="flex: 1; background: #f8fafc; padding: 1rem; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-weight: 600; font-size: 0.9rem;">{{ comment.author.get_full_name }}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">{{ comment.created_at|timesince }}</span>
+                    </div>
+                    <p style="font-size: 0.95rem;">{{ comment.content }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+.media-file-proxy {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    gap: 0.75rem;
+    color: var(--text-main) !important;
+}
+</style>
+{% endblock %}

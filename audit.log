@@ -1,0 +1,3 @@
+INFO 2026-04-12 11:20:58,655 utils 36756 129527837619776 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: Allerte | Type: CLASS | IP: 127.0.0.1
+INFO 2026-04-12 11:58:08,299 utils 36756 129527837619776 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: Teste d'anonce | Type: GLOBAL | IP: 127.0.0.1
+INFO 2026-04-12 12:04:58,915 utils 36756 129527837619776 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: test 2 classe spécifique | Type: CLASS | IP: 127.0.0.1

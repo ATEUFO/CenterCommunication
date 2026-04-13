@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nouvelle Annonce - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="post-form-card">
+        <div class="form-header">
+            <h1><i class="fas fa-bullhorn"></i> Créer une annonce</h1>
+            <p>Communiquez avec les étudiants et enseignants de votre établissement.</p>
+        </div>
+        <div class="form-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Titre de l'annonce</label>
+                    <input type="text" name="title" id="{{ form.title.id_for_label }}" class="input-control" placeholder="Ex: Rappel examen de physique" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.content.id_for_label }}">Contenu</label>
+                    <textarea name="content" id="{{ form.content.id_for_label }}" class="input-control" rows="6" placeholder="Écrivez votre message ici..." required></textarea>
+                </div>
+
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-group">
+                        <label for="{{ form.post_type.id_for_label }}">Type de publication</label>
+                        {{ form.post_type }}
+                    </div>
+                    {% if form.classroom %}
+                    <div class="form-group" id="classroom-field">
+                        <label for="{{ form.classroom.id_for_label }}">Classe cible</label>
+                        {{ form.classroom }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.expires_at.id_for_label }}">Date d'expiration (optionnel)</label>
+                    {{ form.expires_at }}
+                </div>
+
+                <div class="form-group">
+                    <label>Pièces jointes (Images, PDF, Vidéos)</label>
+                    <div class="file-upload-area" onclick="document.getElementById('media-input').click()">
+                        <i class="fas fa-cloud-upload-alt fa-3x" style="color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <p>Cliquez pour ajouter des fichiers ou glissez-déposez</p>
+                        <span class="text-muted" style="font-size: 0.8rem;">Images, PDF, Vidéos (max 10Mo)</span>
+                        <input type="file" name="media_files" id="media-input" multiple style="display: none;" onchange="updateFileList(this)">
+                    </div>
+                    <div id="file-list" style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                </div>
+
+                <div class="form-footer" style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary btn-block">Publier l'annonce</button>
+                    <a href="{% url 'posts_list' %}" class="btn" style="background: #f1f5f9;">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateFileList(input) {
+    const list = document.getElementById('file-list');
+    list.innerHTML = '';
+    for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const item = document.createElement('div');
+        item.className = 'media-item';
+        item.style.padding = '0.5rem';
+        item.style.fontSize = '0.8rem';
+        item.style.background = '#fefefe';
+        item.style.border = '1px solid var(--border-color)';
+        item.style.borderRadius = '8px';
+        item.innerHTML = `<i class="fas fa-file"></i> ${file.name}`;
+        list.appendChild(item);
+    }
+}
+
+// Simple logic to show/hide classroom based on type
+const typeField = document.querySelector('select[name="post_type"]');
+const classField = document.getElementById('classroom-field');
+
+if (typeField && classField) {
+    typeField.addEventListener('change', function() {
+        if (this.value === 'CLASS') {
+            classField.style.display = 'block';
+        } else {
+            classField.style.display = 'none';
+        }
+    });
+    // Trigger on load
+    if (typeField.value !== 'CLASS') classField.style.display = 'none';
+}
+</script>
+
+<style>
+select, input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+}
+</style>
+{% endblock %}

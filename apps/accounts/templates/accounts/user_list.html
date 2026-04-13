@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestion des Utilisateurs - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="dashboard-header">
+        <div>
+            <h1>Gestion des Utilisateurs</h1>
+            <p class="text-muted">Administrez les comptes des étudiants, enseignants et administrateurs.</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'user_create' %}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Ajouter un utilisateur
+            </a>
+        </div>
+    </div>
+
+    <div class="admin-table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Rôle</th>
+                    <th>Email</th>
+                    <th>Date d'inscription</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div class="user-profile" style="gap: 0.5rem;">
+                            <img src="https://ui-avatars.com/api/?name={{ u.get_full_name|urlencode }}&background=random" style="width: 32px; height: 32px;">
+                            <div class="user-info">
+                                <span class="user-name">{{ u.get_full_name|default:u.username }}</span>
+                                <span class="user-role" style="font-size: 0.7rem;">@{{ u.username }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-badge role-{{ u.role|lower }}">
+                            {{ u.get_role_display }}
+                        </span>
+                    </td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.date_joined|date:"d M Y" }}</td>
+                    <td>
+                        {% if u.is_active %}
+                            <span class="badge-global" style="padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">Actif</span>
+                        {% else %}
+                            <span class="badge-personal" style="padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">Inactif</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{% url 'user_update' u.pk %}" class="btn" style="padding: 0.4rem 0.8rem; background: var(--primary-light); color: var(--primary-color);">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'user_delete' u.pk %}" class="btn" style="padding: 0.4rem 0.8rem; background: #fee2e2; color: #991b1b;">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 3rem;">Aucun utilisateur trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 0.5rem;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn">&laquo; Précédent</a>
+        {% endif %}
+        <span class="btn" style="background: white;">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn">Suivant &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vue Académique - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="dashboard-header">
+        <div>
+            <h1>Vue Académique</h1>
+            <p class="text-muted">Gérez les classes et visualisez l'organisation de l'établissement.</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'classroom_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Créer une classe
+            </a>
+        </div>
+    </div>
+
+    <!-- Academic Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-school"></i></div>
+            <div class="stat-info">
+                <h4>Établissements</h4>
+                <div class="value">{{ establishments.count }}</div>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--success-color);">
+            <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+            <div class="stat-info">
+                <h4>Classes Totales</h4>
+                <div class="value">{{ classrooms.count }}</div>
+            </div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--warning-color);">
+            <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="stat-info">
+                <h4>Étudiants Inscrits</h4>
+                <div class="value">{{ students_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Toutes les Classes</h2>
+    </div>
+
+    <div class="academic-grid">
+        {% for class in classrooms %}
+            <div class="class-card fade-in">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3><i class="fas fa-users-rectangle" style="color: var(--primary-color);"></i> {{ class.name }}</h3>
+                    <div style="display: flex; gap: 0.25rem;">
+                        <a href="{% url 'classroom_update' class.pk %}" class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: var(--primary-light); color: var(--primary-color);"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'classroom_delete' class.pk %}" class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: #fee2e2; color: #991b1b;"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+                <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">
+                    <i class="fas fa-building"></i> {{ class.establishment.name }}
+                </p>
+                <div class="class-stats">
+                    <span><i class="fas fa-user-student"></i> <strong>{{ class.students.count }}</strong> Étudiants</span>
+                    <span><i class="fas fa-chalkboard-teacher"></i> <strong>{{ class.teachers.count }}</strong> Enseignants</span>
+                </div>
+                <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Dernière annonce: {{ class.posts.first.created_at|date:"d M"|default:"Aucune" }}</span>
+                    <a href="{% url 'post_create' %}?classroom={{ class.pk }}" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border: 1px solid var(--primary-color); color: var(--primary-color);">
+                        Poster ici
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="card glass text-center" style="grid-column: 1 / -1; padding: 4rem;">
+                <i class="fas fa-folder-open fa-4x" style="color: #cbd5e1; margin-bottom: 1.5rem;"></i>
+                <p>Aucune classe n'a encore été créée.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

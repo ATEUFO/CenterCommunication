@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tableau de bord - CenterCommunication{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Annonces & Communications</h1>
+    {% if user.role == 'ADMIN' or user.role == 'TEACHER' %}
+    <button class="btn btn-primary"><i class="fas fa-plus"></i> Nouvelle annonce</button>
+    {% endif %}
+</div>
+
+<div class="feed-container">
+    {% for post in posts %}
+    <div class="card post-card" onclick="location.href='{% url 'post_detail' post.pk %}'" style="cursor: pointer;">
+        <div class="post-header">
+            <div class="post-author">
+                <img src="https://ui-avatars.com/api/?name={{ post.author.get_full_name|urlencode }}&background=random" alt="Avatar">
+                <div class="author-meta">
+                    <h3>{{ post.author.get_full_name|default:post.author.username }}</h3>
+                    <span class="post-date">{{ post.created_at|date:"d M Y, H:i" }}</span>
+                </div>
+            </div>
+            <span class="post-type-badge badge-{{ post.post_type|lower }}">
+                {% if post.post_type == 'GLOBAL' %}Général{% elif post.post_type == 'CLASS' %}Classe{% else %}Personnel{% endif %}
+            </span>
+        </div>
+
+        <div class="post-content">
+            <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700;">{{ post.title }}</h2>
+            <p>{{ post.content|truncatewords:50 }}</p>
+        </div>
+
+        <div class="post-footer">
+            <div class="post-action">
+                <i class="far fa-comment"></i>
+                <span>{{ post.comments.count }} Commentaires</span>
+            </div>
+            <div class="post-action">
+                <i class="far fa-eye"></i>
+                <span>Voir plus</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--border-color); margin-bottom: 1rem;"></i>
+        <p style="color: var(--text-muted);">Aucune annonce pour le moment.</p>
+    </div>
+    {% endfor %}
+
+    {% if is_paginated %}
+    <div class="pagination" style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn" style="background: white; border: 1px solid var(--border-color);"><i class="fas fa-chevron-left"></i> Précédent</a>
+        {% endif %}
+        
+        <span style="display: flex; align-items: center; font-weight: 600;">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn" style="background: white; border: 1px solid var(--border-color);">Suivant <i class="fas fa-chevron-right"></i></a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

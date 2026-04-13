@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}{% if object %}Modifier{% else %}Créer{% endif %} Classe - CenterCommunication{% endblock %}
+{% block content %}
+<div class="fade-in">
+    <div class="post-form-card" style="max-width: 600px;">
+        <div class="form-header">
+            <h1><i class="fas fa-chalkboard"></i> {% if object %}Modifier{% else %}Créer{% endif %} une classe</h1>
+            <p>Configurez les détails de la classe ci-dessous.</p>
+        </div>
+        <div class="form-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">Nom de la classe</label>
+                    <input type="text" name="name" id="{{ form.name.id_for_label }}" class="input-control" value="{{ form.name.value|default:'' }}" placeholder="Ex: Master 1 Informatique" required>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.establishment.id_for_label }}">Établissement</label>
+                    <select name="establishment" id="{{ form.establishment.id_for_label }}" class="input-control">
+                        {% for val, label in form.establishment.field.choices %}
+                            <option value="{{ val }}" {% if form.establishment.value == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-footer" style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+                    <a href="{% url 'academic_overview' %}" class="btn" style="background: #f1f5f9;">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

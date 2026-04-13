@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer la classe - CenterCommunication{% endblock %}
+{% block content %}
+<div class="fade-in">
+    <div class="card glass text-center" style="max-width: 500px; margin: 4rem auto; padding: 3rem;">
+        <i class="fas fa-exclamation-triangle fa-4x" style="color: var(--danger-color); margin-bottom: 1.5rem;"></i>
+        <h2>Confirmer la suppression</h2>
+        <p style="margin: 1rem 0;">Êtes-vous sûr de vouloir supprimer la classe <strong>{{ object.name }}</strong> ? Tous les étudiants seront désassignés.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="background: var(--danger-color); flex: 1;">Supprimer</button>
+                <a href="{% url 'academic_overview' %}" class="btn" style="background: #f1f5f9; flex: 1;">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
