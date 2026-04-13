@@ -56,9 +56,6 @@
                             </a>
                         {% endif %}
 
-
-
-                        
                         <div class="media-file-info">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <div class="media-type-icon">
@@ -81,35 +78,195 @@
 
     <!-- Comments Section -->
     <div class="comments-section" style="margin-top: 2rem;">
-        <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Commentaires ({{ comments.count }})</h2>
+        <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;" id="comments-count">Commentaires ({{ comments.count }})</h2>
         
-        <div class="card">
-            <form action="#" method="post"> <!-- Comment logic not yet implemented in views but kept for UI -->
+        <div class="card" id="comment-form-container">
+            <form id="comment-form">
                 {% csrf_token %}
+                <input type="hidden" id="parent-id" name="parent" value="">
+                <div id="replying-to" style="display: none; padding: 0.5rem; background: var(--primary-light); border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem; color: var(--primary-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>En réponse à <strong id="reply-author"></strong></span>
+                        <button type="button" id="cancel-reply" style="background: none; border: none; color: var(--danger-color); cursor: pointer;"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <textarea class="input-control" placeholder="Ajouter un commentaire..." rows="2"></textarea>
+                    <textarea class="input-control" id="comment-content" placeholder="Ajouter un commentaire..." rows="2" required></textarea>
                 </div>
                 <div style="text-align: right;">
-                    <button type="submit" class="btn btn-primary" disabled>Envoyer (Bientôt)</button>
+                    <button type="submit" class="btn btn-primary" id="submit-comment">
+                        <i class="fas fa-paper-plane"></i> Envoyer
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="comments-list" style="margin-top: 2rem;">
+        <div class="comments-list" id="comments-list" style="margin-top: 2rem;">
             {% for comment in comments %}
-            <div class="comment-item">
-                <img src="https://ui-avatars.com/api/?name={{ comment.author.get_full_name|urlencode }}&background=random" class="comment-avatar">
-                <div class="comment-bubble">
-                    <div class="comment-header">
-                        <span class="comment-author">{{ comment.author.get_full_name }}</span>
-                        <span class="comment-time">{{ comment.created_at|timesince }}</span>
+                {% if not comment.parent %}
+                <div class="comment-wrapper" id="comment-{{ comment.id }}">
+                    <div class="comment-item">
+                        <img src="https://ui-avatars.com/api/?name={{ comment.author.get_full_name|urlencode }}&background=random" class="comment-avatar">
+                        <div class="comment-bubble">
+                            <div class="comment-header">
+                                <span class="comment-author">{{ comment.author.get_full_name }}</span>
+                                <span class="comment-time">{{ comment.created_at|timesince }}</span>
+                            </div>
+                            <p style="font-size: 0.95rem;">{{ comment.content }}</p>
+                            <div class="comment-actions" style="margin-top: 0.5rem;">
+                                <button class="btn-link reply-btn" data-id="{{ comment.id }}" data-author="{{ comment.author.get_full_name }}" style="font-size: 0.75rem; border: none; background: none; padding: 0; cursor: pointer;">
+                                    Répondre
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <p style="font-size: 0.95rem;">{{ comment.content }}</p>
+                    
+                    <!-- Nested Replies -->
+                    <div class="replies-list" style="margin-left: 3rem; margin-top: 1rem; border-left: 2px solid var(--border-color); padding-left: 1rem;">
+                        {% for reply in comment.replies.all %}
+                        <div class="comment-item" id="comment-{{ reply.id }}">
+                            <img src="https://ui-avatars.com/api/?name={{ reply.author.get_full_name|urlencode }}&background=random" class="comment-avatar" style="width: 28px; height: 28px;">
+                            <div class="comment-bubble" style="padding: 0.75rem;">
+                                <div class="comment-header">
+                                    <span class="comment-author" style="font-size: 0.85rem;">{{ reply.author.get_full_name }}</span>
+                                    <span class="comment-time" style="font-size: 0.7rem;">{{ reply.created_at|timesince }}</span>
+                                </div>
+                                <p style="font-size: 0.9rem;">{{ reply.content }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% empty %}
+                <p id="no-comments">Aucun commentaire pour le moment.</p>
             {% endfor %}
         </div>
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const postId = "{{ post.id }}";
+        const commentForm = document.getElementById('comment-form');
+        const commentsList = document.getElementById('comments-list');
+        const parentInput = document.getElementById('parent-id');
+        const replyingToDiv = document.getElementById('replying-to');
+        const replyAuthorSpan = document.getElementById('reply-author');
+        const cancelReplyBtn = document.getElementById('cancel-reply');
+
+        // Join the post room for real-time updates
+        socket.emit('join_post', { post_id: postId });
+
+        // Handle reply button clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('reply-btn')) {
+                const parentId = e.target.dataset.id;
+                const author = e.target.dataset.author;
+                parentInput.value = parentId;
+                replyAuthorSpan.textContent = author;
+                replyingToDiv.style.display = 'block';
+                document.getElementById('comment-content').focus();
+            }
+        });
+
+        cancelReplyBtn.onclick = () => {
+            parentInput.value = '';
+            replyingToDiv.style.display = 'none';
+        };
+
+        // Handle comment submission
+        commentForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('comment-content').value;
+            const parent = parentInput.value;
+            const submitBtn = document.getElementById('submit-comment');
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+
+            try {
+                const response = await fetch('/api/comments/comments/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        post: parseInt(postId),
+                        content: content,
+                        parent: parent ? parseInt(parent) : null
+                    })
+                });
+
+                if (response.ok) {
+                    commentForm.reset();
+                    parentInput.value = '';
+                    replyingToDiv.style.display = 'none';
+                } else {
+                    alert('Erreur lors de l\'envoi du commentaire');
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+            }
+        };
+
+        // Listen for new comments via Socket.IO
+        socket.on('new_comment', (comment) => {
+            if (comment.post != postId) return;
+
+            const noComments = document.getElementById('no-comments');
+            if (noComments) noComments.remove();
+
+            const commentHtml = `
+                <div class="comment-item fade-in" id="comment-${comment.id}">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author)}&background=random" class="comment-avatar" ${comment.parent ? 'style="width: 28px; height: 28px;"' : ''}>
+                    <div class="comment-bubble" ${comment.parent ? 'style="padding: 0.75rem;"' : ''}>
+                        <div class="comment-header">
+                            <span class="comment-author" ${comment.parent ? 'style="font-size: 0.85rem;"' : ''}>${comment.author}</span>
+                            <span class="comment-time" ${comment.parent ? 'style="font-size: 0.7rem;"' : ''}>À l'instant</span>
+                        </div>
+                        <p style="${comment.parent ? 'font-size: 0.9rem;' : 'font-size: 0.95rem;'}">${comment.content}</p>
+                        ${!comment.parent ? `
+                            <div class="comment-actions" style="margin-top: 0.5rem;">
+                                <button class="btn-link reply-btn" data-id="${comment.id}" data-author="${comment.author}" style="font-size: 0.75rem; border: none; background: none; padding: 0; cursor: pointer;">
+                                    Répondre
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            if (comment.parent) {
+                const parentWrapper = document.getElementById(`comment-${comment.parent}`);
+                if (parentWrapper) {
+                    // Try to find the replies-list inside the wrapper or create it
+                    let repliesList = parentWrapper.querySelector('.replies-list');
+                    if (!repliesList) {
+                        // If it's a wrapper of a comment item
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'replies-list';
+                        wrapper.style.marginLeft = '3rem';
+                        wrapper.style.marginTop = '1rem';
+                        wrapper.style.borderLeft = '2px solid var(--border-color)';
+                        wrapper.style.paddingLeft = '1rem';
+                        parentWrapper.appendChild(wrapper);
+                        repliesList = wrapper;
+                    }
+                    repliesList.innerHTML += commentHtml;
+                }
+            } else {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'comment-wrapper';
+                wrapper.id = `comment-${comment.id}`;
+                wrapper.innerHTML = commentHtml;
+                commentsList.prepend(wrapper);
+            }
+        });
+    });
+</script>
 {% endblock %}

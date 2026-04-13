@@ -19,6 +19,14 @@ class Comment(models.Model):
     content = models.TextField(
         verbose_name='Contenu du commentaire'
     )
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies',
+        verbose_name='Réponse à'
+    )
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Date de création'
