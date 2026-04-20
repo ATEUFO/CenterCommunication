@@ -168,12 +168,71 @@
         .notification-icon .badge {
             position: absolute;
             top: -5px;
-            right: -5px;
-            width: 8px;
-            height: 8px;
+            right: -10px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
             background: var(--danger-color);
-            border-radius: 50%;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
             border: 2px solid white;
+            transition: transform 0.2s ease;
+        }
+        
+        .notification-icon .badge.hidden {
+            display: none;
+        }
+        
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .toast {
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-lg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            min-width: 300px;
+            max-width: 400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            animation: slideInRight 0.3s ease forwards;
+            cursor: pointer;
+        }
+        
+        .toast-content h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+        
+        .toast-content p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
 
         .user-profile {
@@ -761,7 +820,9 @@
                 <div class="user-actions">
                     <a href="{% url 'notifications' %}" class="notification-icon">
                         <i class="fas fa-bell"></i>
-                        <span class="badge"></span>
+                        <span class="badge {% if unread_notifications_count == 0 %}hidden{% endif %}" id="notification-badge">
+                            {{ unread_notifications_count }}
+                        </span>
                     </a>
                     <div class="user-profile">
                         <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=0D8ABC&color=fff" alt="Avatar">
@@ -833,18 +894,82 @@
 
             {% block content %}{% endblock %}
         </main>
+        <div class="toast-container" id="toast-container"></div>
     </div>
 
-    <script>
         const socket = io();
 
         socket.on('connect', () => {
             console.log('Connected to real-time server');
+            {% if user.is_authenticated %}
+            socket.emit('join_notifications', { 'user_id': {{ user.id }} });
+            {% endif %}
         });
 
         socket.on('connection_success', (data) => {
             console.log('Handshake successful:', data.sid);
         });
+
+        socket.on('new_notification', (data) => {
+            console.log('New notification received:', data);
+            
+            // Update the badge
+            const badge = document.getElementById('notification-badge');
+            if (badge) {
+                let count = parseInt(badge.textContent) || 0;
+                count += 1;
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+                
+                // Add a small bounce animation
+                badge.style.transform = 'scale(1.2)';
+                setTimeout(() => { badge.style.transform = 'scale(1)'; }, 200);
+            }
+            
+            // Show a toast
+            showToast('Nouvelle notification', data.message, "{% url 'notifications' %}");
+            
+            // If we are on the notifications page, try to prepend it to the list
+            const notificationsContainer = document.querySelector('.card .notification-item');
+            if (notificationsContainer) {
+                // If there was previously an empty message, remove it
+                const emptyMsg = document.querySelector('.card > div[style*="text-align: center"]');
+                if (emptyMsg) emptyMsg.remove();
+                
+                const card = document.querySelector('.card');
+                const html = `
+                    <div class="notification-item unread" style="animation: slideInRight 0.3s ease forwards;">
+                        <div class="notif-icon bg-info">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="notif-body">
+                            <p>${data.message}</p>
+                            <span class="notif-time">À l'instant</span>
+                        </div>
+                    </div>
+                `;
+                card.insertAdjacentHTML('afterbegin', html);
+            }
+        });
+        
+        function showToast(title, message, url) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.onclick = () => window.location.href = url;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const sidebarToggle = document.getElementById('sidebar-toggle');

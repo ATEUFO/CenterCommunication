@@ -27,6 +27,22 @@ async def leave_post(sid, data):
         print(f"Client {sid} left room {room}")
 
 @sio.event
+async def join_notifications(sid, data):
+    user_id = data.get('user_id')
+    if user_id:
+        room = f"user_{user_id}"
+        await sio.enter_room(sid, room)
+        print(f"Client {sid} joined room {room}")
+
+@sio.event
+async def leave_notifications(sid, data):
+    user_id = data.get('user_id')
+    if user_id:
+        room = f"user_{user_id}"
+        await sio.leave_room(sid, room)
+        print(f"Client {sid} left room {room}")
+
+@sio.event
 async def disconnect(sid):
     print(f"Client disconnected: {sid}")
 
@@ -54,3 +70,25 @@ def emit_new_comment(comment):
     except Exception as e:
         # In some contexts (like management commands), no loop exists
         print(f"Socket.IO emission failed: {e}")
+
+def emit_new_notification(notification):
+    """
+    Synchronous helper to emit new notification to the correct user room.
+    """
+    from apps.notifications.serializers import NotificationSerializer
+    import asyncio
+    
+    async def _emit():
+        serializer = NotificationSerializer(notification)
+        data = serializer.data
+        room = f"user_{notification.user.id}"
+        await sio.emit('new_notification', data, room=room)
+
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            asyncio.run_coroutine_threadsafe(_emit(), loop)
+        else:
+            asyncio.run(_emit())
+    except Exception as e:
+        print(f"Socket.IO emission failed for notification: {e}")
