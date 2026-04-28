@@ -50,7 +50,7 @@
         
         <div class="feed-container">
             {% for post in posts|slice:":5" %}
-                <div class="card post-card fade-in" style="animation-delay: '{{ forloop.counter0|add:0.1 }}'s">
+                <div class="card post-card fade-in" style="animation-delay: '{{ forloop.counter0|add:0.1 }}s'">
                     <div class="post-header">
                         <div class="post-author">
                             <img src="https://ui-avatars.com/api/?name={{ post.author.get_full_name|urlencode }}&background=random" alt="Avatar">
@@ -72,19 +72,19 @@
                             {% for media in post.media.all|slice:":3" %}
                             <div class="media-item">
                                 {% if media.media_type == 'IMAGE' %}
-                                    <div class="image-wrapper" style="cursor: pointer;" onclick='window.location.href="{% url "post_detail" post.pk %}"'>
+                                    <a href="{% url 'post_detail' post.pk %}" class="image-wrapper" style="display: block; text-decoration: none;">
                                         <img src="{{ media.file.url }}" alt="Image">
-                                    </div>
+                                    </a>
                                 {% elif media.media_type == 'VIDEO' %}
-                                    <div class="video-preview" style="background: #000; display: flex; align-items: center; justify-content: center; height: 150px; color: white;">
+                                    <div class="video-preview">
                                         <i class="fas fa-play-circle fa-2x"></i>
                                     </div>
                                 {% elif media.media_type == 'PDF' %}
-                                    <div class="pdf-preview" style="background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 150px; gap: 0.5rem;">
+                                    <div class="pdf-preview">
                                         <i class="fas fa-file-pdf text-danger fa-2x"></i>
                                     </div>
                                 {% else %}
-                                    <div class="other-preview" style="background: #f1f5f9; display: flex; align-items: center; justify-content: center; height: 150px;">
+                                    <div class="other-preview">
                                         <i class="fas fa-file-alt fa-2x"></i>
                                     </div>
                                 {% endif %}
