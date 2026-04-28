@@ -878,6 +878,57 @@
             font-weight: 500;
             color: var(--text-muted);
         }
+
+        /* --- Responsive Design / Mobile --- */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width) !important;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+                box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem;
+            }
+            .main-content.expanded {
+                margin-left: 0 !important;
+            }
+            .topbar {
+                padding: 0 1rem;
+            }
+            /* Simplify header on mobile */
+            .search-bar {
+                display: none;
+            }
+            .logo > span {
+                display: none;
+            }
+            .user-info {
+                display: none;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .header-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -1058,8 +1109,21 @@
 
             if (sidebarToggle) {
                 sidebarToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('collapsed');
-                    mainContent.classList.toggle('expanded');
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.toggle('mobile-open');
+                    } else {
+                        sidebar.classList.toggle('collapsed');
+                        mainContent.classList.toggle('expanded');
+                    }
+                });
+
+                // Close mobile sidebar if clicking outside
+                document.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
+                        if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                            sidebar.classList.remove('mobile-open');
+                        }
+                    }
                 });
             }
 
