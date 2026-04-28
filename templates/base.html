@@ -824,13 +824,13 @@
                             {{ unread_notifications_count }}
                         </span>
                     </a>
-                    <div class="user-profile">
+                    <a href="{% url 'profile' %}" class="user-profile" style="text-decoration: none; color: inherit; cursor: pointer;">
                         <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=0D8ABC&color=fff" alt="Avatar">
                         <div class="user-info">
                             <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
                             <span class="user-role">{{ user.get_role_display }}</span>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </header>
