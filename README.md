@@ -331,9 +331,3 @@ project/
 * Gestion des rôles
 
 ---
-
-* je peux te générer **le code complet du projet Django (structure + models + config PostgreSQL)**
-* ou faire **le diagramme UML (classe + use case en image)**
-* ou t’aider à commencer directement avec `django-admin startproject`
-
-Tu veux qu’on passe à l’implémentation ?
