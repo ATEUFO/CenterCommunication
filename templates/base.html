@@ -901,9 +901,10 @@
 
         socket.on('connect', () => {
             console.log('Connected to real-time server');
-            {% if user.is_authenticated %}
-            socket.emit('join_notifications', { 'user_id': {{ user.id }} });
-            {% endif %}
+            const userId = "{{ user.id|default:'' }}";
+            if (userId) {
+                socket.emit('join_notifications', { 'user_id': userId });
+            }
         });
 
         socket.on('connection_success', (data) => {
