@@ -332,12 +332,6 @@ project/
 
 ---
 
-# 🚀 Conclusion
-
-Ton projet est **très solide** et correspond à une vraie application utilisée dans les écoles.
-
-👉 Si tu veux, prochaine étape :
-
 * je peux te générer **le code complet du projet Django (structure + models + config PostgreSQL)**
 * ou faire **le diagramme UML (classe + use case en image)**
 * ou t’aider à commencer directement avec `django-admin startproject`
