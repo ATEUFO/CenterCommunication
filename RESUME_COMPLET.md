@@ -1,4 +1,4 @@
-# 🎉 RÉSUMÉ COMPLET - PROJET CENTERCOMMUNICATION
+# 🎉 RÉSUMÉ COMPLET - PROJET CouCou
 
 ## ✅ PROJET TERMINÉ AVEC SUCCÈS
 
@@ -181,7 +181,7 @@ README.md               → Vue d'ensemble du projet
 
 ### Installation des dépendances
 ```bash
-cd /home/arthur/Documents/Projets_en_cour/CenterCommunication
+cd /home/arthur/Documents/Projets_en_cour/CouCou
 source venv/bin/activate
 pip install -r requirements.txt  # Optionnel (déjà installé)
 ```
@@ -371,7 +371,7 @@ Tables personnalisées:
 
 ## 🎉 CONCLUSION
 
-**Le projet CenterCommunication est TERMINÉ, COMPILÉ, et COMPLÈTEMENT OPÉRATIONNEL.**
+**Le projet CouCou est TERMINÉ, COMPILÉ, et COMPLÈTEMENT OPÉRATIONNEL.**
 
 Tous les composants sont en place et testés. Le projet est prêt pour:
 - ✅ Développement immédiat
@@ -389,7 +389,7 @@ Tous les composants sont en place et testés. Le projet est prêt pour:
 
 ```
  ╔════════════════════════════════════════╗
- ║   PROJET CENTERCOMMUNICATION COMPLET   ║
+ ║   PROJET CouCou COMPLET   ║
  ║         ✅ PRÊT À DÉMARRER             ║
  ╚════════════════════════════════════════╝
 ```

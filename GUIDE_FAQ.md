@@ -1,4 +1,4 @@
-# 🎓 GUIDE COMPLET - FAQ CenterCommunication
+# 🎓 GUIDE COMPLET - FAQ CouCou
 
 ## ❓ Pourquoi l'URL `http://127.0.0.1:8000/` renvoie un 404 ?
 
@@ -18,7 +18,7 @@ curl http://127.0.0.1:8001/
 Retourne:
 ```json
 {
-  "message": "🎓 Bienvenue sur CenterCommunication",
+  "message": "🎓 Bienvenue sur CouCou",
   "description": "Babillard intelligent d'établissement scolaire",
   "endpoints": {...}
 }
@@ -92,7 +92,7 @@ python manage.py createsuperuser
 ### **Fichier `.env` configuré pour DÉVELOPPEMENT/TESTS**:
 
 ```env
-# 🔧 Configuration CenterCommunication - DÉVELOPPEMENT
+# 🔧 Configuration CouCou - DÉVELOPPEMENT
 DEBUG=True
 SECRET_KEY=django-insecure-u@c(ph)1$^5-8-7aouear75=(t^31348h#_)99#9=u$3oj*ufo
 ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
@@ -127,7 +127,7 @@ REST_FRAMEWORK_PAGE_SIZE=20
 
 ### **1. Activation de l'environnement**
 ```bash
-cd /home/arthur/Documents/Projets_en_cour/CenterCommunication
+cd /home/arthur/Documents/Projets_en_cour/CouCou
 source venv/bin/activate
 ```
 
@@ -177,7 +177,7 @@ curl http://127.0.0.1:8001/
 
 # Résultat:
 # {
-#   "message": "🎓 Bienvenue sur CenterCommunication",
+#   "message": "🎓 Bienvenue sur CouCou",
 #   ...
 # }
 ```

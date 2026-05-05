@@ -16,7 +16,7 @@ class HomeAPIView(APIView):
         host = request.get_host()  # Inclut le port automatiquement
         
         return Response({
-            'message': '🎓 Bienvenue sur CenterCommunication',
+            'message': '🎓 Bienvenue sur CouCou',
             'description': 'Babillard intelligent d\'établissement scolaire',
             'version': '1.0.0',
             'server': {

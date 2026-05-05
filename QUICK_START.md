@@ -1,10 +1,10 @@
-# 🚀 QUICK START - CenterCommunication
+# 🚀 QUICK START - CouCou
 
 ## En 3 Commandes
 
 ```bash
 # 1. Naviguer au projet
-cd /home/arthur/Documents/Projets_en_cour/CenterCommunication
+cd /home/arthur/Documents/Projets_en_cour/CouCou
 
 # 2. Activer l'environnement
 source venv/bin/activate

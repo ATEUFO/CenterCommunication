@@ -1,4 +1,4 @@
-# Fonctionnement de Socket.IO dans CenterCommunication
+# Fonctionnement de Socket.IO dans CouCou
 
 Ce document explique comment le temps réel est implémenté dans l'application pour permettre les commentaires et notifications instantanés.
 

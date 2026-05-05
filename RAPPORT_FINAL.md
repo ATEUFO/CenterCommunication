@@ -3,7 +3,7 @@
 ## 📊 Résumé d'Exécution
 
 **Date**: 10 avril 2026  
-**Projet**: CenterCommunication - Babillard intelligent d'établissement  
+**Projet**: CouCou - Babillard intelligent d'établissement  
 **Statut**: ✅ **COMPLÉTÉ AVEC SUCCÈS**
 
 ---
@@ -130,7 +130,7 @@ RAPPORT_FINAL.md             → Ce fichier
 
 ### Démarrage du serveur
 ```bash
-cd /home/arthur/Documents/Projets_en_cour/CenterCommunication
+cd /home/arthur/Documents/Projets_en_cour/CouCou
 source venv/bin/activate
 python manage.py runserver 0.0.0.0:8000
 ```
@@ -230,7 +230,7 @@ python test_api.py
 
 ## 🎉 Conclusion
 
-**Le projet CenterCommunication est complètement construit, configuré et testé.**
+**Le projet CouCou est complètement construit, configuré et testé.**
 
 Tous les fichiers sont prêts pour:
 - ✅ Développement immédiat

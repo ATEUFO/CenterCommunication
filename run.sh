@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Script pour lancer le serveur CenterCommunication sur le port 8000
+# Script pour lancer le serveur CouCou sur le port 8000
 
-cd /home/arthur/Documents/Projets_en_cour/CenterCommunication
+cd "$(dirname "$0")"
 
-echo "🚀 Démarrage de CenterCommunication..."
+echo "🚀 Démarrage de CouCou..."
 echo ""
 
 # Activer l'environnement virtuel
@@ -20,7 +20,7 @@ python manage.py check
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎓 CenterCommunication démarre sur :"
+echo "🎓 CouCou démarre sur :"
 echo "   http://127.0.0.1:8000/"
 echo ""
 echo "📚 Endpoints disponibles :"

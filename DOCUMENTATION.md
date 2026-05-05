@@ -1,8 +1,8 @@
-# 📚 Documentation du Projet CenterCommunication
+# 📚 Documentation du Projet CouCou
 
 ## ✅ État du Projet
 
-Le projet **CenterCommunication** a été créé avec succès et compilé. Tous les modèles, migrations et configurations sont fonctionnels.
+Le projet **CouCou** a été créé avec succès et compilé. Tous les modèles, migrations et configurations sont fonctionnels.
 
 ### Statut des Tests
 - ✓ Toutes les tables de la base de données créées
@@ -17,7 +17,7 @@ Le projet **CenterCommunication** a été créé avec succès et compilé. Tous 
 ## 🗂️ Structure du Projet
 
 ```
-CenterCommunication/
+CouCou/
 ├── config/                          # Configuration Django
 │   ├── settings.py                 # Paramètres (avec DRF, locale FR)
 │   ├── urls.py                      # URLs principales
