@@ -2,3 +2,8 @@ INFO 2026-04-12 11:20:58,655 utils 36756 129527837619776 ADMIN ACTION: admin (Ad
 INFO 2026-04-12 11:58:08,299 utils 36756 129527837619776 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: Teste d'anonce | Type: GLOBAL | IP: 127.0.0.1
 INFO 2026-04-12 12:04:58,915 utils 36756 129527837619776 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: test 2 classe spécifique | Type: CLASS | IP: 127.0.0.1
 INFO 2026-04-28 05:17:06,372 utils 242857 131705892218432 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: Rassemblement tous à l'heur porté vos chaises | Type: GLOBAL | IP: 127.0.0.1
+INFO 2026-06-22 17:11:11,395 utils 93784 126901209261632 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: cour de physique reporté | Type: CLASS | IP: 127.0.0.1
+INFO 2026-06-22 17:12:45,761 utils 93784 126901209261632 ADMIN ACTION: admin (Administrateur) | CREATE_USER | User: ananga | Role: STUDENT | IP: 127.0.0.1
+INFO 2026-06-22 17:13:09,327 utils 93784 126901209261632 ADMIN ACTION: admin (Administrateur) | UPDATE_USER | User: ananga | Role: STUDENT | IP: 127.0.0.1
+INFO 2026-06-22 17:14:45,487 utils 93784 126901209261632 ADMIN ACTION: admin (Administrateur) | CREATE_POST | Post: je ne sais pas trop quoi | Type: CLASS | IP: 127.0.0.1
+INFO 2026-06-22 17:18:27,142 utils 93784 126901209261632 ADMIN ACTION: admin (Administrateur) | UPDATE_USER | User: ananga | Role: STUDENT | IP: 127.0.0.1
